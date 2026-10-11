@@ -10,7 +10,8 @@
     module "ec2_instance" {
         source = "./modules/ec2"
         instance_type = var.instance_type
-        public_key_path = var.public_key_path
+       # public_key_path = var.public_key_path
+        public_key = var.public_key
         environment = var.environment
         # Pass root variables down to the module:
         custom_username = var.custom_username

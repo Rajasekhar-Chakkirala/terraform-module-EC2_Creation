@@ -4,54 +4,52 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
-# Required for AWS OIDC authentication
 permissions:
-  id-token: write # Allows GitHub to request an OIDC JSON Web Token (JWT)
-  contents: read  # Required for checking out repository code
+  id-token: write
+  contents: read
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    
-    # Links to the GitHub Environment where your AWS variables are configured
-    environment: Dev # Replace with the exact name of your GitHub environment
+    environment: Dev
 
     steps:
-      # 1. Checkout repository code (fixed typo from terraform-actions/checkout)
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2. Authenticate to AWS via OIDC (No secret keys needed)
+      - name: Debug OIDC Token Claims
+        run: |
+          TOKEN=$(curl -s -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+            "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=sts.amazonaws.com" | jq -r '.value')
+          echo "=== Decoded OIDC Token Claims ==="
+          echo "$TOKEN" | cut -d'.' -f2 | base64 --decode 2>/dev/null | jq '{sub: .sub, aud: .aud, environment: .environment, ref: .ref, repository: .repository}'
+
       - name: Configure AWS credentials via OIDC
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ vars.AWS_ROLE_ARN }}
           aws-region: ${{ vars.AWS_REGION }}
           audience: sts.amazonaws.com
+          role-skip-session-tagging: true
 
-      # 3. Setup Terraform CLI
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.5.7
 
-      # 4. Initialize Terraform working directory
       - name: Terraform Init
         run: terraform init
 
-      # 5. Validate Terraform syntax and configuration
       - name: Terraform Validate
         run: terraform validate
 
-      # 6. Generate execution plan and save artifact
       - name: Terraform Plan
         run: terraform plan -out=tfplan
 
-      # 7. Apply the saved execution plan
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
 
-      # 8. Display Terraform outputs
       - name: Terraform Output
         run: terraform output

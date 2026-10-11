@@ -19,9 +19,14 @@ variable "instance_type" {
 }
 
 
-variable "public_key_path" {
+#variable "public_key_path" {
+ # type        = string
+ # description = "Path to SSH public key (e.g., ~/.ssh/id_rsa.pub)"
+#}
+
+variable "public_key" {
+  description = "Public SSH key content from GitHub environment secrets"
   type        = string
-  description = "Path to SSH public key (e.g., ~/.ssh/id_rsa.pub)"
 }
 
 variable "environment" {
