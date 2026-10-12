@@ -15,6 +15,16 @@ jobs:
     runs-on: ubuntu-latest
     environment: Dev
 
+    env:
+      TF_VAR_aws_region: ${{ vars.AWS_REGION }}
+      TF_VAR_vpc_cidr: ${{ vars.VPC_CIDR }}
+      TF_VAR_public_subnet_cidr: ${{ vars.PUBLIC_SUBNET_CIDR }}
+      TF_VAR_instance_type: ${{ vars.INSTANCE_TYPE }}
+      TF_VAR_environment: ${{ vars.ENVIRONMENT }}
+      TF_VAR_custom_username: ${{ vars.CUSTOM_USERNAME }}
+      TF_VAR_custom_password: ${{ vars.CUSTOM_PASSWORD }}
+      TF_VAR_public_key: ${{ secrets.PUBLIC_KEY }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
