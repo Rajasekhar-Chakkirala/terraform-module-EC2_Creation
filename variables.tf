@@ -47,4 +47,8 @@ variable "custom_password" {
   sensitive   = true
 }
 
+variable "bucket_name" {
+  description = "Globally unique name of the S3 bucket for Terraform remote state"
+  type        = string
+}
 
