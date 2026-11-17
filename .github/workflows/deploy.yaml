@@ -24,6 +24,7 @@ jobs:
       TF_VAR_custom_username: ${{ vars.CUSTOM_USERNAME }}
       TF_VAR_custom_password: ${{ vars.CUSTOM_PASSWORD }}
       TF_VAR_public_key: ${{ secrets.PUBLIC_KEY }}
+      TF_VAR_bucket_name: ${{ vars.BUCKET_NAME}}
 
     steps:
       - name: Checkout code
