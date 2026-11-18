@@ -2,8 +2,8 @@ terraform {
   required_version = ">= 1.0"
 
   backend "s3" {
-   # bucket        = "chairaja0610-tfstate-bucket-2026" # Same bucket name as above
-    bucket         = var.bucket_name
+    bucket        = "chairaja0610-tfstate-bucket-2026" # Same bucket name as above
+    #bucket         = var.bucket_name
     key            = "ec2-app/terraform.tfstate"
     region         = "us-east-1"
     dynamodb_table = "terraform-state-locks"
